@@ -1,5 +1,6 @@
 import PageRenderer from "./PageRenderer";
-import Article from './Article'
+import Article from './Article';
+//import attachEventsToPageList from './attachEventsToPageList'
 
 function setDate30daysAgo(){
     var day,month,year;
@@ -12,6 +13,7 @@ function setDate30daysAgo(){
     return `from-date=${year}-${month}-${day}&`    
 }
 
+
 export default class RESTController {    
     constructor(){
         this.baseURL = "http://content.guardianapis.com/search?api-key=baf7e7bf-09f3-4cfa-87a5-6044956c198f&";      
@@ -19,8 +21,15 @@ export default class RESTController {
         this.fromDate = setDate30daysAgo();
         this.PageRenderer = new PageRenderer();
     };
-    fetchArticles(Settings) {        
-        fetch(this.baseURL + this.fromDate )
+    fetchArticles(Settings) {
+        var wichPage = `page=${Settings.page}&`
+        var addinationalURL = "";
+        if (Settings.section){              
+            addinationalURL = addinationalURL +`section=${Settings.section}`            
+        }        
+        this.PageRenderer.articlesList = []
+        //console.log(addinationalURL)       
+        fetch(this.baseURL + this.fromDate + this.articlesPerPage + wichPage + addinationalURL)
         .then(response => {           
             return response.json();
         }).then(data => {            
@@ -28,14 +37,15 @@ export default class RESTController {
                 var data ={
                     title: result.webTitle,
                     sectionName: result.sectionName,
-                    dateOfPublication: result.webPublicationDate,
-                    fullArticleLink:result.webUrl,
+                    dateOfPublication: result.webPublicationDate.split("T")[0],
+                    fullArticleLink: result.webUrl,
                 }
-                var article = new Article( data )
-                this.PageRenderer.addArticleToList(article)
+                var article = new Article( data );
+                this.PageRenderer.addArticleToList(article);
+                
             });
-            //console.log(this.PageRenderer.articlesList);
-            this.PageRenderer.render(data.response.pages, this.PageRenderer.articlesList);
+            console.log(this.PageRenderer.articlesList);
+            this.PageRenderer.render(data.response.pages, Settings.page);
             //this.PageRenderer.attachListeners();
         });
     };
