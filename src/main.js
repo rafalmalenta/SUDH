@@ -8,19 +8,27 @@ import RESTController from './assets/RESTController'
     
     
     RESTControler.fetchArticles({section:"all", page:1, tag: ""});
-    var sectionSelect = document.querySelectorAll("#sectionSelect")[0];
+    var sectionSelect = document.querySelector("#sectionSelect");
     sectionSelect.addEventListener("change",(e)=>{        
             RESTControler.fetchArticles({section: e.target.value, page:1, tag: searchSelector.value});
         
     });
-    var pageSelector = document.querySelectorAll('#activePageSelect')[0];
+    var pageSelector = document.querySelector('#activePageSelect');
     pageSelector.addEventListener("change",(e)=>{  
         RESTControler.fetchArticles({section: sectionSelect.value, page: e.target.value, tag: searchSelector.value});       
     });
-    var searchSelector = document.querySelectorAll('#newsContentSearch')[0];
+    var searchSelector = document.querySelector('#newsContentSearch');
     searchSelector.addEventListener("keypress",(e)=>{
-        console.log(sectionSelect.value);
+        //console.log(sectionSelect.value);
         if(e.code === "Enter")
             RESTControler.fetchArticles({section: sectionSelect.value, page: 1, tag:searchSelector.value});               
-    });    
+    }); 
+    var articlesList = document.querySelectorAll('#nnewsList')[0];
+    searchSelector.addEventListener("keypress",(e)=>{
+        //console.log(sectionSelect.value);
+        if(e.code === "Enter")
+            RESTControler.fetchArticles({section: sectionSelect.value, page: 1, tag:searchSelector.value});               
+    }); 
+
+    
 })()    

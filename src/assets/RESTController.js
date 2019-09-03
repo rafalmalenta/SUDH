@@ -1,7 +1,6 @@
 import PageRenderer from "./PageRenderer";
 import Article from './Article';
 //import attachEventsToPageList from './attachEventsToPageList'
-
 function setDate30daysAgo(){
     var day,month,year;
     var dateToday = new Date();
@@ -30,8 +29,7 @@ function setAddinationalURL(settings){
         tag = '';            
     }
     else tag = `tag=${settings.tag}&`;
-    addinationalURL = addinationalURL + tag ;
-    console.log(wichPage + addinationalURL)
+    addinationalURL = addinationalURL + tag ;    
     return wichPage + addinationalURL;      
 }
 
@@ -42,7 +40,7 @@ export default class RESTController {
         //page-size set to 10 incase default value changes        
         this.PageRenderer = new PageRenderer();
     };
-    fetchArticles(settings) {
+    fetchArticles(settings){
         //each fetch clears List      
         this.PageRenderer.articlesList = [];
         var addinationalURL = setAddinationalURL(settings);
@@ -51,8 +49,9 @@ export default class RESTController {
         .then(response => {           
             return response.json();
         }).then(data => {            
-            data.response.results.map((result)=>{                 
+            data.response.results.map((result, index)=>{                 
                 var data = {
+                    id: index,
                     title: result.webTitle,
                     sectionName: result.sectionName,
                     dateOfPublication: result.webPublicationDate.split("T")[0],

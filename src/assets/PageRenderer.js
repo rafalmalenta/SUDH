@@ -21,14 +21,16 @@ export default class PageRenderer {
             this.paginatorDOM[0].appendChild(opt);            
         }
         this.articlesList.map((article)=>{
-           template = template + article.createTemplate();
-            
+           template = template + article.createTemplate();            
         }) 
         this.articlesWrapper[0].innerHTML = template  
     }
     addArticleToList(article){
         this.articlesList.push(article)
-    }            
+    } 
+    addForLaterRead(article){
+        this.readLaterList.push(article)
+    }           
             
     
 }
