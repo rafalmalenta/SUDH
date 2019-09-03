@@ -18,17 +18,11 @@ import RESTController from './assets/RESTController'
         RESTControler.fetchArticles({section: sectionSelect.value, page: e.target.value, tag: searchSelector.value});       
     });
     var searchSelector = document.querySelector('#newsContentSearch');
-    searchSelector.addEventListener("keypress",(e)=>{
-        //console.log(sectionSelect.value);
+    searchSelector.addEventListener("keypress",(e)=>{        
         if(e.code === "Enter")
             RESTControler.fetchArticles({section: sectionSelect.value, page: 1, tag:searchSelector.value});               
     }); 
-    var articlesList = document.querySelectorAll('#nnewsList')[0];
-    searchSelector.addEventListener("keypress",(e)=>{
-        //console.log(sectionSelect.value);
-        if(e.code === "Enter")
-            RESTControler.fetchArticles({section: sectionSelect.value, page: 1, tag:searchSelector.value});               
-    }); 
+    
 
     
 })()    
