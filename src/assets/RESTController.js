@@ -12,41 +12,56 @@ function setDate30daysAgo(){
     year = date30DaysAgo.getFullYear();
     return `from-date=${year}-${month}-${day}&`    
 }
+function setAddinationalURL(settings){
+    var wichPage="";
+    var section="";
+    var tag ="";
+    var addinationalURL = "" ;
+    if(settings.page){
+        wichPage = `page=${settings.page}&`;
+    }
+    //else     
+    if (settings.section==="all"){              
+        section = '';            
+    }
+    else section = `section=${settings.section}&`;
+    addinationalURL = addinationalURL + section ;
+    if (settings.tag === ""){              
+        tag = '';            
+    }
+    else tag = `tag=${settings.tag}&`;
+    addinationalURL = addinationalURL + tag ;
+    console.log(wichPage + addinationalURL)
+    return wichPage + addinationalURL;      
+}
 
 
 export default class RESTController {    
     constructor(){
-        this.baseURL = "http://content.guardianapis.com/search?api-key=baf7e7bf-09f3-4cfa-87a5-6044956c198f&";      
-        this.articlesPerPage = "page-size=10&"; // incase default value changes 
-        this.fromDate = setDate30daysAgo();
+        this.constantURLpart = "http://content.guardianapis.com/search?api-key=baf7e7bf-09f3-4cfa-87a5-6044956c198f&page-size=10&"+setDate30daysAgo();      
+        //page-size set to 10 incase default value changes        
         this.PageRenderer = new PageRenderer();
     };
-    fetchArticles(Settings) {
-        var wichPage = `page=${Settings.page}&`
-        var addinationalURL = "";
-        if (Settings.section){              
-            addinationalURL = addinationalURL +`section=${Settings.section}`            
-        }        
-        this.PageRenderer.articlesList = []
-        //console.log(addinationalURL)       
-        fetch(this.baseURL + this.fromDate + this.articlesPerPage + wichPage + addinationalURL)
+    fetchArticles(settings) {
+        //each fetch clears List      
+        this.PageRenderer.articlesList = [];
+        var addinationalURL = setAddinationalURL(settings);
+         
+        fetch(this.constantURLpart + addinationalURL)
         .then(response => {           
             return response.json();
         }).then(data => {            
             data.response.results.map((result)=>{                 
-                var data ={
+                var data = {
                     title: result.webTitle,
                     sectionName: result.sectionName,
                     dateOfPublication: result.webPublicationDate.split("T")[0],
                     fullArticleLink: result.webUrl,
                 }
                 var article = new Article( data );
-                this.PageRenderer.addArticleToList(article);
-                
-            });
-            console.log(this.PageRenderer.articlesList);
-            this.PageRenderer.render(data.response.pages, Settings.page);
-            //this.PageRenderer.attachListeners();
+                this.PageRenderer.addArticleToList(article);                
+            });           
+            this.PageRenderer.render(data.response.pages, settings.page);            
         });
     };
     
